@@ -37,7 +37,7 @@ export default function Home() {
             </div>
             <div>
               <span className="font-bold text-foreground text-lg tracking-tight">VoiceClone</span>
-              <span className="ml-2 text-xs text-muted-foreground hidden sm:inline">Fish Audio Studio</span>
+              <span className="ml-2 text-xs text-muted-foreground hidden sm:inline">语音工作室</span>
             </div>
           </div>
 
@@ -45,23 +45,23 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground">
               <Zap className="w-3.5 h-3.5 text-accent" />
-              <span>Powered by Fish Audio</span>
+              <span>由 Fish Audio 驱动</span>
             </div>
             <Button
               variant="outline"
               size="sm"
-              className="gap-2 border-border text-muted-foreground hover:text-foreground"
+              className="gap-2 border-border text-muted-foreground hover:text-foreground active:scale-95 transition-all"
               onClick={() => setShowSettings(true)}
             >
               <Settings className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">API Key</span>
+              <span className="hidden sm:inline">设置</span>
             </Button>
           </div>
         </div>
       </header>
 
       {/* Main content */}
-      <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
+      <main className="max-w-5xl mx-auto px-6 py-6 space-y-8">
         {/* Voice Library */}
         <VoiceLibrary
           onVoiceSelect={setSelectedVoice}

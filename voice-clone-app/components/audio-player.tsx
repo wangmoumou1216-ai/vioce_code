@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Play, Pause, Download, Volume2 } from 'lucide-react';
@@ -9,12 +9,22 @@ interface AudioPlayerProps {
   audioUrl: string;
 }
 
+function generateBarHeights(count: number) {
+  const heights: number[] = [];
+  for (let i = 0; i < count; i++) {
+    heights.push(20 + Math.sin(i * 0.5) * 15 + Math.sin(i * 1.3) * 10 + Math.sin(i * 0.3) * 8);
+  }
+  return heights;
+}
+
 export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  const barHeights = useMemo(() => generateBarHeights(60), []);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -61,9 +71,9 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
   return (
     <Card className="border-accent/30 bg-accent/5">
       <CardContent className="p-4">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-2.5 mb-3">
           <Volume2 className="w-4 h-4 text-accent" />
-          <h3 className="text-sm font-medium text-foreground">Generated Audio</h3>
+          <h3 className="text-sm font-medium text-foreground">生成结果</h3>
         </div>
 
         <audio ref={audioRef} src={audioUrl} preload="metadata" />
@@ -72,34 +82,31 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
           <Button
             onClick={togglePlay}
             size="icon"
-            className="w-10 h-10 rounded-full bg-accent hover:bg-accent/90 text-accent-foreground shrink-0"
+            className="w-10 h-10 rounded-full bg-accent hover:bg-accent/90 text-accent-foreground shrink-0 active:scale-90 transition-all"
           >
             {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
           </Button>
 
           <div className="flex-1 space-y-1">
-            {/* Waveform-style progress bar */}
             <div
-              className="h-8 bg-secondary rounded cursor-pointer relative overflow-hidden"
+              className="h-8 bg-secondary rounded-md cursor-pointer relative overflow-hidden group"
               onClick={handleSeek}
             >
-              {/* Waveform bars */}
-              <div className="absolute inset-0 flex items-center gap-0.5 px-1">
-                {Array.from({ length: 60 }).map((_, i) => {
-                  const barProgress = (i / 60) * 100;
+              <div className="absolute inset-0 flex items-center gap-[1px] px-1">
+                {barHeights.map((height, i) => {
+                  const barProgress = (i / barHeights.length) * 100;
                   const isActive = barProgress <= progress;
-                  const height = 20 + Math.sin(i * 0.5) * 15 + Math.random() * 10;
                   return (
                     <div
                       key={i}
-                      className={`flex-1 rounded-full transition-colors ${isActive ? 'bg-accent' : 'bg-border'}`}
-                      style={{ height: `${Math.max(4, height)}%` }}
+                      className={`flex-1 rounded-full transition-colors duration-150 ${isActive ? 'bg-accent' : 'bg-border group-hover:bg-border/80'}`}
+                      style={{ height: `${Math.max(8, height)}%` }}
                     />
                   );
                 })}
               </div>
             </div>
-            <div className="flex justify-between text-xs text-muted-foreground">
+            <div className="flex justify-between text-xs text-muted-foreground px-0.5">
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
             </div>
@@ -109,11 +116,11 @@ export default function AudioPlayer({ audioUrl }: AudioPlayerProps) {
             asChild
             variant="outline"
             size="sm"
-            className="gap-1.5 border-accent/40 text-accent hover:bg-accent/10 shrink-0"
+            className="gap-1.5 border-accent/40 text-accent hover:bg-accent/10 shrink-0 active:scale-[0.97] transition-all"
           >
             <a href={audioUrl} download="generated-speech.mp3">
               <Download className="w-3.5 h-3.5" />
-              Download
+              下载
             </a>
           </Button>
         </div>

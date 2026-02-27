@@ -36,7 +36,7 @@ export default function VoiceLibrary({ onVoiceSelect, selectedVoiceId, refreshTr
       const data = await res.json();
       setVoices(data);
     } catch {
-      toast.error('Failed to load voices');
+      toast.error('加载声音列表失败');
     } finally {
       setLoading(false);
     }
@@ -52,12 +52,12 @@ export default function VoiceLibrary({ onVoiceSelect, selectedVoiceId, refreshTr
     try {
       const res = await fetch(`/api/voices/${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete');
-      toast.success('Voice deleted');
+      toast.success('声音已删除');
       if (selectedVoiceId === id) onVoiceSelect(null);
       await fetchVoices();
       onVoicesChange();
     } catch {
-      toast.error('Failed to delete voice');
+      toast.error('删除声音失败');
     } finally {
       setDeletingId(null);
     }
@@ -67,17 +67,17 @@ export default function VoiceLibrary({ onVoiceSelect, selectedVoiceId, refreshTr
     setShowClonePanel(false);
     fetchVoices();
     onVoicesChange();
-    toast.success('Voice created successfully!');
+    toast.success('声音创建成功！');
   }
 
   function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric'
+    return new Date(dateStr).toLocaleDateString('zh-CN', {
+      year: 'numeric', month: 'long', day: 'numeric'
     });
   }
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-5">
       {/* Section header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -85,17 +85,17 @@ export default function VoiceLibrary({ onVoiceSelect, selectedVoiceId, refreshTr
             <Mic className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-foreground">Voice Library</h2>
-            <p className="text-sm text-muted-foreground">{voices.length} voice{voices.length !== 1 ? 's' : ''} available</p>
+            <h2 className="text-lg font-semibold text-foreground">声音库</h2>
+            <p className="text-sm text-muted-foreground">共 {voices.length} 个声音可用</p>
           </div>
         </div>
         <Button
           onClick={() => setShowClonePanel(!showClonePanel)}
-          className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground active:scale-[0.97] transition-all"
           size="sm"
         >
           <Plus className="w-4 h-4" />
-          Add Voice
+          添加声音
         </Button>
       </div>
 
@@ -109,49 +109,49 @@ export default function VoiceLibrary({ onVoiceSelect, selectedVoiceId, refreshTr
 
       {/* Voice cards */}
       {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-32 rounded-xl bg-card animate-pulse border border-border" />
+            <div key={i} className="h-28 rounded-xl bg-card animate-pulse border border-border" />
           ))}
         </div>
       ) : voices.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center border border-dashed border-border rounded-xl">
+        <div className="flex flex-col items-center justify-center py-10 text-center border border-dashed border-border rounded-xl">
           <Mic className="w-10 h-10 text-muted-foreground mb-3" />
-          <p className="text-muted-foreground">No voices yet</p>
-          <p className="text-sm text-muted-foreground/60 mt-1">Click &quot;Add Voice&quot; to clone your first voice</p>
+          <p className="text-muted-foreground">暂无声音</p>
+          <p className="text-sm text-muted-foreground/60 mt-1">点击「添加声音」克隆你的第一个声音</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {voices.map(voice => (
             <Card
               key={voice.id}
-              className={`cursor-pointer transition-all duration-200 border ${
+              className={`cursor-pointer transition-all duration-200 active:scale-[0.98] ${
                 selectedVoiceId === voice.id
-                  ? 'border-primary bg-primary/5 shadow-[0_0_0_1px] shadow-primary/30'
-                  : 'border-border hover:border-primary/40 bg-card'
+                  ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
+                  : 'border-border hover:border-primary/40 hover:bg-card/80 bg-card'
               }`}
               onClick={() => onVoiceSelect(selectedVoiceId === voice.id ? null : voice)}
             >
               <CardContent className="p-4">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm">
+                <div className="flex items-start justify-between mb-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-semibold text-sm shrink-0">
                       {voice.name.charAt(0).toUpperCase()}
                     </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm leading-tight">{voice.name}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium text-foreground text-sm leading-tight truncate">{voice.name}</p>
                       <Badge
                         variant="outline"
-                        className="text-xs mt-0.5 border-green-500/40 text-green-400 bg-green-500/10"
+                        className="text-[10px] mt-1 border-green-500/40 text-green-400 bg-green-500/10 px-1.5 py-0"
                       >
-                        Ready
+                        就绪
                       </Badge>
                     </div>
                   </div>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-7 h-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    className="w-7 h-7 -mr-1 -mt-0.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 active:scale-90 transition-all shrink-0"
                     onClick={(e) => handleDelete(voice.id, e)}
                     disabled={deletingId === voice.id}
                   >
@@ -166,8 +166,8 @@ export default function VoiceLibrary({ onVoiceSelect, selectedVoiceId, refreshTr
                   {formatDate(voice.created_at)}
                 </div>
                 {selectedVoiceId === voice.id && (
-                  <div className="mt-2 pt-2 border-t border-primary/20">
-                    <p className="text-xs text-primary font-medium">✓ Selected for TTS</p>
+                  <div className="mt-2.5 pt-2 border-t border-primary/20">
+                    <p className="text-xs text-primary font-medium">✓ 已选用于语音合成</p>
                   </div>
                 )}
               </CardContent>

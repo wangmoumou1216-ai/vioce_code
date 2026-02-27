@@ -15,13 +15,13 @@ export async function PUT(request: NextRequest) {
     const { fish_api_key } = body;
 
     if (!fish_api_key || typeof fish_api_key !== 'string') {
-      return NextResponse.json({ error: 'fish_api_key is required' }, { status: 400 });
+      return NextResponse.json({ error: '请输入 API Key' }, { status: 400 });
     }
 
     setSetting('fish_api_key', fish_api_key.trim());
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('PUT /api/settings error:', error);
-    return NextResponse.json({ error: 'Failed to save settings' }, { status: 500 });
+    return NextResponse.json({ error: '保存设置失败' }, { status: 500 });
   }
 }

@@ -7,6 +7,6 @@ export async function GET() {
     return NextResponse.json(generations);
   } catch (error) {
     console.error('GET /api/generations error:', error);
-    return NextResponse.json({ error: 'Failed to fetch generations' }, { status: 500 });
+    return NextResponse.json({ error: '获取生成历史失败' }, { status: 500 });
   }
 }

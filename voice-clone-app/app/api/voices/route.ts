@@ -8,7 +8,7 @@ export async function GET() {
     return NextResponse.json(voices);
   } catch (error) {
     console.error('GET /api/voices error:', error);
-    return NextResponse.json({ error: 'Failed to fetch voices' }, { status: 500 });
+    return NextResponse.json({ error: '获取声音列表失败' }, { status: 500 });
   }
 }
 
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get('audio') as File | null;
 
     if (!name || !file) {
-      return NextResponse.json({ error: 'name and audio are required' }, { status: 400 });
+      return NextResponse.json({ error: '请填写声音名称并上传音频文件' }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -35,6 +35,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(voice, { status: 201 });
   } catch (error) {
     console.error('POST /api/voices error:', error);
-    return NextResponse.json({ error: 'Failed to create voice' }, { status: 500 });
+    return NextResponse.json({ error: '创建声音失败' }, { status: 500 });
   }
 }

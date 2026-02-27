@@ -10,7 +10,7 @@ export async function DELETE(
     const { id } = await params;
     const voice = getVoice(id);
     if (!voice) {
-      return NextResponse.json({ error: 'Voice not found' }, { status: 404 });
+      return NextResponse.json({ error: '声音不存在' }, { status: 404 });
     }
 
     if (voice.audio_path) {
@@ -21,6 +21,6 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('DELETE /api/voices/[id] error:', error);
-    return NextResponse.json({ error: 'Failed to delete voice' }, { status: 500 });
+    return NextResponse.json({ error: '删除声音失败' }, { status: 500 });
   }
 }

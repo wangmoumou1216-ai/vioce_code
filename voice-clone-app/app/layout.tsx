@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "VoiceClone — Fish Audio Studio",
-  description: "Clone voices and generate speech with Fish Audio AI",
+  title: "VoiceClone — Fish Audio 语音工作室",
+  description: "使用 Fish Audio AI 克隆声音并生成语音",
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <body className={`${inter.variable} font-sans antialiased`}>
         {children}
         <Toaster position="bottom-right" theme="dark" richColors />

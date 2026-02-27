@@ -38,7 +38,7 @@ export async function generateTTS(apiKey: string, options: TTSOptions): Promise<
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Fish Audio API error ${response.status}: ${errorText}`);
+    throw new Error(`Fish Audio API 请求失败 (${response.status})：${errorText}`);
   }
 
   const arrayBuffer = await response.arrayBuffer();

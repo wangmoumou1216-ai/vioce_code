@@ -25,7 +25,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
   }, []);
 
   async function handleSave() {
-    if (!apiKey.trim()) { toast.error('Please enter an API key'); return; }
+    if (!apiKey.trim()) { toast.error('请输入 API Key'); return; }
     setSaving(true);
     try {
       const res = await fetch('/api/settings', {
@@ -34,41 +34,52 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
         body: JSON.stringify({ fish_api_key: apiKey.trim() }),
       });
       if (!res.ok) throw new Error('Failed to save');
-      toast.success('API key saved!');
+      toast.success('API Key 已保存！');
       setHasKey(true);
       setApiKey('');
       onClose();
     } catch {
-      toast.error('Failed to save API key');
+      toast.error('保存 API Key 失败');
     } finally {
       setSaving(false);
     }
   }
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-border bg-card">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <Card
+        className="w-full max-w-md border-border bg-card animate-in fade-in zoom-in-95 duration-200"
+        onClick={e => e.stopPropagation()}
+      >
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-2.5">
               <Settings className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-semibold text-foreground">Settings</h2>
+              <h2 className="text-lg font-semibold text-foreground">设置</h2>
             </div>
-            <Button variant="ghost" size="icon" className="w-8 h-8" onClick={onClose}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-8 h-8 active:scale-90 transition-all"
+              onClick={onClose}
+            >
               <X className="w-4 h-4" />
             </Button>
           </div>
 
           {hasKey && (
             <div className="flex items-center gap-2 mb-4 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-              <CheckCircle2 className="w-4 h-4 text-green-400" />
-              <p className="text-sm text-green-400">API key is configured</p>
+              <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
+              <p className="text-sm text-green-400">API Key 已配置</p>
             </div>
           )}
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">
+              <label className="text-xs font-medium text-muted-foreground tracking-wide mb-1.5 block">
                 Fish Audio API Key
               </label>
               <div className="relative">
@@ -76,36 +87,37 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
                   type={showKey ? 'text' : 'password'}
                   value={apiKey}
                   onChange={e => setApiKey(e.target.value)}
-                  placeholder={hasKey ? 'Enter new API key to update' : 'sk-...'}
+                  placeholder={hasKey ? '输入新的 API Key 以更新' : 'sk-...'}
                   className="bg-background border-border pr-10"
                   onKeyDown={e => { if (e.key === 'Enter') handleSave(); }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowKey(!showKey)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               <p className="text-xs text-muted-foreground/60 mt-1.5">
-                Get your API key from{' '}
+                前往{' '}
                 <a href="https://fish.audio" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                   fish.audio
                 </a>
+                {' '}获取 API Key
               </p>
             </div>
 
-            <div className="flex gap-2 pt-2">
+            <div className="flex gap-3 pt-1">
               <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground gap-2 active:scale-[0.97] transition-all"
               >
-                {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : 'Save API Key'}
+                {saving ? <><Loader2 className="w-4 h-4 animate-spin" /> 保存中...</> : '保存 API Key'}
               </Button>
-              <Button variant="outline" onClick={onClose} className="border-border">
-                Cancel
+              <Button variant="outline" onClick={onClose} className="border-border active:scale-[0.97] transition-all">
+                取消
               </Button>
             </div>
           </div>

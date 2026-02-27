@@ -37,7 +37,7 @@ export default function ClonePanel({ onSuccess, onCancel }: ClonePanelProps) {
     if (dropped && dropped.type.startsWith('audio/')) {
       setFile(dropped);
     } else {
-      toast.error('Please upload an audio file (MP3, WAV, M4A)');
+      toast.error('请上传音频文件（MP3、WAV、M4A）');
     }
   }, []);
 
@@ -47,8 +47,8 @@ export default function ClonePanel({ onSuccess, onCancel }: ClonePanelProps) {
   };
 
   const handleSubmit = async () => {
-    if (!name.trim()) { toast.error('Please enter a voice name'); return; }
-    if (!file) { toast.error('Please upload an audio file'); return; }
+    if (!name.trim()) { toast.error('请输入声音名称'); return; }
+    if (!file) { toast.error('请上传音频文件'); return; }
 
     setUploading(true);
     try {
@@ -60,11 +60,11 @@ export default function ClonePanel({ onSuccess, onCancel }: ClonePanelProps) {
       const res = await fetch('/api/voices', { method: 'POST', body: formData });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'Upload failed');
+        throw new Error(err.error || '上传失败');
       }
       onSuccess();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to create voice');
+      toast.error(error instanceof Error ? error.message : '创建声音失败');
     } finally {
       setUploading(false);
     }
@@ -79,17 +79,17 @@ export default function ClonePanel({ onSuccess, onCancel }: ClonePanelProps) {
     <Card className="border-primary/30 bg-primary/5">
       <CardContent className="p-5">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-foreground">Add New Voice</h3>
-          <Button variant="ghost" size="icon" className="w-7 h-7" onClick={onCancel}>
+          <h3 className="font-semibold text-foreground">添加新声音</h3>
+          <Button variant="ghost" size="icon" className="w-7 h-7 active:scale-90 transition-all" onClick={onCancel}>
             <X className="w-4 h-4" />
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Upload area */}
           <div
-            className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-              isDragging ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
+            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
+              isDragging ? 'border-primary bg-primary/10 scale-[1.01]' : 'border-border hover:border-primary/50 hover:bg-primary/5'
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
@@ -106,67 +106,67 @@ export default function ClonePanel({ onSuccess, onCancel }: ClonePanelProps) {
             {file ? (
               <div className="flex flex-col items-center gap-2">
                 <FileAudio className="w-8 h-8 text-primary" />
-                <p className="text-sm font-medium text-foreground">{file.name}</p>
+                <p className="text-sm font-medium text-foreground truncate max-w-full">{file.name}</p>
                 <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={(e) => { e.stopPropagation(); setFile(null); }}
-                  className="mt-1 text-xs"
+                  className="mt-1 text-xs active:scale-95 transition-all"
                 >
-                  Change file
+                  更换文件
                 </Button>
               </div>
             ) : (
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center gap-2.5">
                 <Upload className="w-8 h-8 text-muted-foreground" />
-                <p className="text-sm text-foreground">Drop audio file here</p>
-                <p className="text-xs text-muted-foreground">MP3, WAV, M4A · 15+ seconds</p>
-                <Button variant="outline" size="sm" className="mt-1 text-xs">
-                  Browse Files
+                <p className="text-sm text-foreground">将音频文件拖放至此处</p>
+                <p className="text-xs text-muted-foreground">MP3、WAV、M4A · 15秒以上</p>
+                <Button variant="outline" size="sm" className="mt-1 text-xs active:scale-95 transition-all">
+                  浏览文件
                 </Button>
               </div>
             )}
           </div>
 
           {/* Form fields */}
-          <div className="space-y-3">
+          <div className="space-y-3.5">
             <div>
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">
-                Voice Name *
+              <label className="text-xs font-medium text-muted-foreground tracking-wide mb-1.5 block">
+                声音名称 *
               </label>
               <Input
                 value={name}
                 onChange={e => setName(e.target.value)}
-                placeholder="e.g. My Voice, Alex"
+                placeholder="例如：我的声音、小明"
                 className="bg-background border-border"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5 block">
-                Transcript (Optional)
+              <label className="text-xs font-medium text-muted-foreground tracking-wide mb-1.5 block">
+                音频文本（可选）
               </label>
               <Textarea
                 value={transcript}
                 onChange={e => setTranscript(e.target.value)}
-                placeholder="What is said in the audio file? (improves quality)"
+                placeholder="音频中说了什么？（填写可提升克隆质量）"
                 className="bg-background border-border text-sm resize-none h-20"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <Button
                 onClick={handleSubmit}
                 disabled={uploading}
-                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground gap-2 active:scale-[0.97] transition-all"
               >
                 {uploading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</>
+                  <><Loader2 className="w-4 h-4 animate-spin" /> 创建中...</>
                 ) : (
-                  'Clone Voice'
+                  '克隆声音'
                 )}
               </Button>
-              <Button variant="outline" onClick={onCancel} className="border-border">
-                Cancel
+              <Button variant="outline" onClick={onCancel} className="border-border active:scale-[0.97] transition-all">
+                取消
               </Button>
             </div>
           </div>

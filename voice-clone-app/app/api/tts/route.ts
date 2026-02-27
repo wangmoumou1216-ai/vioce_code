@@ -9,12 +9,12 @@ export async function POST(request: NextRequest) {
     const { text, voice_id, model = 's1' } = body;
 
     if (!text) {
-      return NextResponse.json({ error: 'text is required' }, { status: 400 });
+      return NextResponse.json({ error: '请输入合成文本' }, { status: 400 });
     }
 
     const apiKey = getSetting('fish_api_key');
     if (!apiKey) {
-      return NextResponse.json({ error: 'Fish Audio API key not configured' }, { status: 400 });
+      return NextResponse.json({ error: '未配置 Fish Audio API Key，请先在设置中填写' }, { status: 400 });
     }
 
     let referenceAudio: string | undefined;
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (voice_id) {
       const voice = getVoice(voice_id);
       if (!voice) {
-        return NextResponse.json({ error: 'Voice not found' }, { status: 404 });
+        return NextResponse.json({ error: '声音不存在' }, { status: 404 });
       }
       voiceName = voice.name;
       if (voice.audio_path) {
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('POST /api/tts error:', error);
-    const message = error instanceof Error ? error.message : 'Failed to generate speech';
+    const message = error instanceof Error ? error.message : '语音生成失败';
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
